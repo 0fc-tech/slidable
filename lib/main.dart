@@ -3,7 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 void main() => runApp(MyApp());
 
@@ -42,31 +41,28 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body:
-      ListView.separated(
-          separatorBuilder:(index, n)=>const Divider() ,
-          padding: const EdgeInsets.all(8),
-          itemCount: entries.length,
-          itemBuilder: (BuildContext context, int index)
-            => Slidable(
-              key: Key(index.toString()),
-              closeOnScroll: true,
-              startActionPane: ActionPane(
-                dismissible: DismissiblePane(
-                  key: Key(index.toString()),
-                  onDismissed: () {
-                    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-                      content: Text(entries[index]),
-                      duration: const Duration(seconds: 1),
-                    ));
-                }),
-                motion: ScrollMotion(),
-                children: [],
-              ),
-              child: ListTile(
-                title: Center(child: Text('Entry ${entries[index]}')),
-              ),
-            )
+      body: ListView.separated(
+        separatorBuilder:(index, n) => const Divider(height: 0.0,) ,
+        itemCount: entries.length,
+
+        itemBuilder: (BuildContext context, int index) => Container(
+          child: Dismissible(
+            background: Container(color: Colors.green,),
+            onDismissed: (_) {
+                setState(() {
+                  entries.removeAt(index);
+                });
+                ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                  content: Text(entries[index]),
+                  duration: const Duration(seconds: 1),
+                ));
+            },
+            key: UniqueKey(),
+            child: ListTile(
+              title: Center(child: Text('Entry ${entries[index]}')),
+            ),
+          ),
+        )
       ),
 
     );
